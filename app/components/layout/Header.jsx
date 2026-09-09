@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   motion,
   useScroll,
@@ -13,110 +13,23 @@ import { ChevronDown, Menu, Search, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const colorCache = new Map();
-
-function extractPrimaryColor(src, callback) {
-  if (typeof window === "undefined" || !src) return;
-
-  if (colorCache.has(src)) {
-    callback(colorCache.get(src));
-    return;
-  }
-
-  const img = new window.Image();
-  img.crossOrigin = "anonymous";
-  const separator = src.includes("?") ? "&" : "?";
-  img.src = `${src}${separator}cors_bust=${Date.now()}`;
-
-  img.onload = () => {
-    try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return;
-
-      canvas.width = 32;
-      canvas.height = 32;
-      ctx.drawImage(img, 0, 0, 32, 32);
-
-      const imageData = ctx.getImageData(0, 0, 32, 32);
-      const data = imageData.data;
-
-      let r = 0,
-        g = 0,
-        b = 0,
-        count = 0;
-
-      for (let i = 0; i < data.length; i += 4) {
-        const alpha = data[i + 3];
-        if (alpha > 50) {
-          const red = data[i];
-          const green = data[i + 1];
-          const blue = data[i + 2];
-          const isNearWhite = red > 230 && green > 230 && blue > 230;
-          const isNearBlack = red < 25 && green < 25 && blue < 25;
-
-          if (!isNearWhite && !isNearBlack) {
-            r += red;
-            g += green;
-            b += blue;
-            count++;
-          }
-        }
-      }
-
-      if (count > 0) {
-        const result = `${Math.round(r / count)}, ${Math.round(g / count)}, ${Math.round(b / count)}`;
-        colorCache.set(src, result);
-        callback(result);
-      } else {
-        colorCache.set(src, null);
-        callback(null);
-      }
-    } catch {
-      colorCache.set(src, null);
-      callback(null);
-    }
-  };
-
-  img.onerror = () => {
-    colorCache.set(src, null);
-    callback(null);
-  };
-}
-
 function CategoryCard({ item }) {
-  const iconSrc = typeof item.icon === "string" ? item.icon : item.icon?.src;
-  const [rgbColor, setRgbColor] = useState(
-    item.color || (iconSrc ? colorCache.get(iconSrc) || null : null),
-  );
-
-  useEffect(() => {
-    if (item.color) {
-      setRgbColor(item.color);
-      return;
-    }
-    if (iconSrc) {
-      if (colorCache.has(iconSrc)) {
-        setRgbColor(colorCache.get(iconSrc));
-        return;
-      }
-      extractPrimaryColor(iconSrc, (rgb) => setRgbColor(rgb));
-    }
-  }, [iconSrc, item.color]);
-
   return (
-    <Link href={`/category/${item.slug}`} className="block">
+    <Link
+      href={`/category/${item.slug}`}
+      className="block hover:scale-[102%] transition-transform"
+    >
       <article
         style={
-          rgbColor
+          item.color
             ? {
-                backgroundColor: `rgba(${rgbColor}, 0.07)`,
-                borderColor: `rgba(${rgbColor}, 0.3)`,
+                backgroundColor: `rgba(${item.color}, 0.07)`,
+                borderColor: `rgba(${item.color}, 0.3)`,
               }
             : undefined
         }
         className={`relative flex items-center justify-between px-2.5 py-2 border overflow-hidden ${
-          !rgbColor ? "bg-transparent border-zinc-200" : ""
+          !item.color ? "bg-transparent border-zinc-200" : ""
         }`}
       >
         <div className="relative z-10 min-w-0 pr-6">
@@ -325,9 +238,9 @@ function Header({ logo, data, categories = [] }) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute left-0 top-full z-[100] w-72 md:w-80 pt-2"
+                        className="absolute left-0 top-full z-[100] w-72 md:w-80 pt-2 translate-y-[5px] "
                       >
-                        <div className="bg-white p-2.5 pt-3 border border-zinc-200 shadow-xl rounded-none max-h-[70vh] overflow-y-auto space-y-1.5 scrollbar-thin grid gap-2 grid-cols-2">
+                        <div className="bg-white p-2.5 pt-3 border border-t-0 border-zinc-200 shadow-xl rounded-none max-h-[70vh] overflow-y-auto space-y-1.5 scrollbar-thin grid gap-2 grid-cols-2">
                           {categories.length > 0 ? (
                             categories.map((item, i) => (
                               <CategoryCard
