@@ -6,6 +6,7 @@ import { Roboto, Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import ConditionalRender from "./components/ui/ConditionalRender";
 import { headerData } from "./controllers/headerData";
+import { topCategories } from "./controllers/topCategories";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -21,9 +22,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [siteConfig_, headerData_] = await Promise.all([
+  const [siteConfig_, headerData_, categories_] = await Promise.all([
     siteConfig(),
     headerData(),
+    topCategories(),
   ]);
   return (
     <html
@@ -39,7 +41,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <ConditionalRender excludedPaths={["/admin/structure"]}>
-          <Header logo={siteConfig_?.logo} data={headerData_} />
+          <Header
+            logo={siteConfig_?.logo}
+            data={headerData_}
+            categories={categories_}
+          />
         </ConditionalRender>
 
         {children}

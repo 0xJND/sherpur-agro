@@ -1,10 +1,11 @@
-import { CloudShader } from "@/components/ui/cloud-shader";
+import Hero from "./components/view/Hero";
 
 function Home() {
   return (
-    <section className="relative h-[700px]">
-      <CloudShader className="absolute inset-0 opacity-80 blur-[10px]" />
-    </section>
+    <>
+      <Hero />
+      <h1 className="text-9xl text-pink-400"></h1>
+    </>
   );
 }
 

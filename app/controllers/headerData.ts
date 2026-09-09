@@ -2,9 +2,10 @@
 
 import { sanityClient } from "@/sanity/lib/client";
 import { cacheConf } from "../hooks/cacheConf";
+import { groq } from "next-sanity";
 
 export const headerData = async () => {
-  const query = `
+  const query = groq`
     *[_type == "headerSettings"][0]{
         searchPlaceholder,
         categoriesButtonText,

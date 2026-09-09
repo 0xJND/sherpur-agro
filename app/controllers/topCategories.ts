@@ -4,11 +4,12 @@ import { sanityClient } from "@/sanity/lib/client";
 import { cacheConf } from "../hooks/cacheConf";
 import { groq } from "next-sanity";
 
-export const siteConfig = async () => {
+export const topCategories = async () => {
   const query = groq`
-    *[_type == "siteSetting"][0]{
-      ...,
-      "logo": logo.asset->url
+    *[_type == "category"]{
+        name,
+        "slug": slug.current,
+        "icon": icon.asset->url
     }
   `;
 
