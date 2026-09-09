@@ -13,23 +13,32 @@ import { ChevronDown, Menu, Search, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+const colorCache = new Map();
+
 function extractPrimaryColor(src, callback) {
   if (typeof window === "undefined" || !src) return;
+
+  if (colorCache.has(src)) {
+    callback(colorCache.get(src));
+    return;
+  }
+
   const img = new window.Image();
-  img.crossOrigin = "Anonymous";
-  img.src = src;
+  img.crossOrigin = "anonymous";
+  const separator = src.includes("?") ? "&" : "?";
+  img.src = `${src}${separator}cors_bust=${Date.now()}`;
 
   img.onload = () => {
     try {
       const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) return;
 
-      canvas.width = img.width || 32;
-      canvas.height = img.height || 32;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.width = 32;
+      canvas.height = 32;
+      ctx.drawImage(img, 0, 0, 32, 32);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, 32, 32);
       const data = imageData.data;
 
       let r = 0,
@@ -56,38 +65,59 @@ function extractPrimaryColor(src, callback) {
       }
 
       if (count > 0) {
-        callback(
-          `${Math.round(r / count)}, ${Math.round(g / count)}, ${Math.round(b / count)}`,
-        );
+        const result = `${Math.round(r / count)}, ${Math.round(g / count)}, ${Math.round(b / count)}`;
+        colorCache.set(src, result);
+        callback(result);
       } else {
-        callback("16, 185, 129");
+        colorCache.set(src, null);
+        callback(null);
       }
     } catch {
-      callback("16, 185, 129");
+      colorCache.set(src, null);
+      callback(null);
     }
   };
 
-  img.onerror = () => callback("16, 185, 129");
+  img.onerror = () => {
+    colorCache.set(src, null);
+    callback(null);
+  };
 }
 
 function CategoryCard({ item }) {
-  const [rgbColor, setRgbColor] = useState("255, 255, 255");
   const iconSrc = typeof item.icon === "string" ? item.icon : item.icon?.src;
+  const [rgbColor, setRgbColor] = useState(
+    item.color || (iconSrc ? colorCache.get(iconSrc) || null : null),
+  );
 
   useEffect(() => {
+    if (item.color) {
+      setRgbColor(item.color);
+      return;
+    }
     if (iconSrc) {
+      if (colorCache.has(iconSrc)) {
+        setRgbColor(colorCache.get(iconSrc));
+        return;
+      }
       extractPrimaryColor(iconSrc, (rgb) => setRgbColor(rgb));
     }
-  }, [iconSrc]);
+  }, [iconSrc, item.color]);
 
   return (
-    <Link href={`/category/${item.slug}`} className="block group">
+    <Link href={`/category/${item.slug}`} className="block">
       <article
-        style={{
-          backgroundColor: `rgba(${rgbColor}, 0.07)`,
-          borderColor: `rgba(${rgbColor}, 0.3)`,
-        }}
-        className="relative flex items-center justify-between px-2.5 py-2 border transition-all duration-200 overflow-hidden"
+        style={
+          rgbColor
+            ? {
+                backgroundColor: `rgba(${rgbColor}, 0.07)`,
+                borderColor: `rgba(${rgbColor}, 0.3)`,
+              }
+            : undefined
+        }
+        className={`relative flex items-center justify-between px-2.5 py-2 border overflow-hidden ${
+          !rgbColor ? "bg-transparent border-zinc-200" : ""
+        }`}
       >
         <div className="relative z-10 min-w-0 pr-6">
           <h5 className="text-[14px] font-medium leading-tight truncate text-zinc-700">
@@ -95,13 +125,13 @@ function CategoryCard({ item }) {
           </h5>
         </div>
 
-        <div className="pointer-events-none absolute -bottom-1 -right-1 w-7 h-7 opacity-100 group-hover:scale-110 transition-all duration-300">
+        <div className="pointer-events-none absolute -bottom-1 -right-1 w-7 h-7 opacity-100">
           <Image
             alt={item.name}
             src={item.icon}
             width={28}
             height={28}
-            className="w-full h-full object-contain "
+            className="w-full h-full object-contain"
           />
         </div>
       </article>
@@ -158,13 +188,13 @@ function Header({ logo, data, categories = [] }) {
   return (
     <>
       <div
-        className="h-[89px] sm:h-[105px] md:h-[129px] w-full shrink-0"
+        className="h-[89px] sm:h-[105px] md:h-[135px] lg:h-[145px] w-full shrink-0"
         aria-hidden="true"
       />
 
       <motion.header
         style={{ y: headerY }}
-        className={`fixed top-0 left-0 z-50 w-full border-b border-zinc-100 transition-colors duration-200 ${
+        className={`fixed top-0 left-0 z-50 w-full border-b border-zinc-100 ${
           isScrolled ? "bg-white/95 backdrop-blur-md" : "bg-white"
         }`}
       >
@@ -209,16 +239,18 @@ function Header({ logo, data, categories = [] }) {
               </form>
             </div>
 
-            <div className="hidden md:flex items-center gap-5 lg:gap-7 shrink-0">
-              <button className="flex items-center gap-2 text-zinc-700 hover:text-zinc-950 cursor-pointer">
+            <div className="flex items-center gap-3 sm:gap-5 lg:gap-7 shrink-0">
+              <button className="flex items-center gap-1.5 sm:gap-2 text-zinc-700 hover:text-zinc-950 cursor-pointer">
                 <ShoppingBag size={18} strokeWidth={1.5} />
-                <span className="text-sm font-medium">Cart</span>
+                <span className="hidden sm:inline text-sm font-medium">
+                  Cart
+                </span>
               </button>
 
               {signInLink?.label && (
                 <Link
                   href={signInLink.href || "/signin"}
-                  className="text-sm font-medium text-zinc-700 hover:text-zinc-950"
+                  className="text-xs sm:text-sm font-medium text-zinc-700 hover:text-zinc-950"
                 >
                   {signInLink.label}
                 </Link>
@@ -227,7 +259,7 @@ function Header({ logo, data, categories = [] }) {
               {signUpLink?.label && (
                 <Link
                   href={signUpLink.href || "/signup"}
-                  className="rounded-none bg-emerald-800 px-5 py-2 text-xs lg:text-sm font-medium text-zinc-50 hover:bg-emerald-900 active:bg-zinc-950"
+                  className="rounded-none bg-emerald-800 px-3 sm:px-5 py-1.5 sm:py-2 text-xs lg:text-sm font-medium text-zinc-50 hover:bg-emerald-900 active:bg-zinc-950"
                 >
                   {signUpLink.label}
                 </Link>
@@ -262,9 +294,9 @@ function Header({ logo, data, categories = [] }) {
           </div>
         )}
 
-        <div className="hidden md:block w-full border-t border-zinc-100">
-          <div className="mx-auto flex max-w-[1480px] items-center justify-between py-3 text-sm px-3 sm:px-6 lg:px-8 relative">
-            <div className="flex items-center gap-5 lg:gap-8 font-medium">
+        <div className="hidden md:flex w-full border-t border-zinc-100 bg-white">
+          <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between py-2.5 sm:py-3 text-xs md:text-sm px-3 sm:px-6 lg:px-8 relative">
+            <div className="flex items-center gap-4 md:gap-6 lg:gap-8 font-medium">
               {categoriesButtonText && (
                 <div
                   className="relative"
@@ -272,29 +304,30 @@ function Header({ logo, data, categories = [] }) {
                   onMouseLeave={() => setIsCategoriesOpen(false)}
                 >
                   <button
+                    type="button"
                     onClick={() => setIsCategoriesOpen((prev) => !prev)}
-                    className="flex items-center gap-2 text-zinc-700 hover:text-zinc-950 cursor-pointer py-1"
+                    className="flex items-center gap-1.5 md:gap-2 text-zinc-800 hover:text-emerald-900 cursor-pointer py-1 select-none font-semibold"
                   >
-                    <Menu size={16} strokeWidth={1.75} />
+                    <Menu size={16} strokeWidth={2} />
                     <span>{categoriesButtonText}</span>
                     <ChevronDown
                       size={14}
-                      className={`transition-transform duration-150 ${
-                        isCategoriesOpen ? "rotate-180" : ""
-                      }`}
+                      className={
+                        isCategoriesOpen ? "rotate-180 text-emerald-900" : ""
+                      }
                     />
                   </button>
 
                   <AnimatePresence>
                     {isCategoriesOpen && (
                       <motion.div
-                        initial={{ opacity: 0, y: 4 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 4 }}
-                        transition={{ duration: 0.12, ease: "easeOut" }}
-                        className="absolute left-0 top-full z-50 w-80 translate-y-[14px]"
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={{ duration: 0.15, ease: "easeOut" }}
+                        className="absolute left-0 top-full z-[100] w-72 md:w-80 pt-2"
                       >
-                        <div className="bg-white p-2 pt-3 border border-t-0 border-zinc-200 overflow-y-auto space-y-1.5 scrollbar-thin grid gap-2 grid-cols-2">
+                        <div className="bg-white p-2.5 pt-3 border border-zinc-200 shadow-xl rounded-none max-h-[70vh] overflow-y-auto space-y-1.5 scrollbar-thin grid gap-2 grid-cols-2">
                           {categories.length > 0 ? (
                             categories.map((item, i) => (
                               <CategoryCard
@@ -303,7 +336,7 @@ function Header({ logo, data, categories = [] }) {
                               />
                             ))
                           ) : (
-                            <p className="text-xs text-zinc-500 py-3 text-center">
+                            <p className="text-xs text-zinc-500 py-4 text-center col-span-2">
                               No categories available
                             </p>
                           )}
@@ -318,7 +351,7 @@ function Header({ logo, data, categories = [] }) {
                 <Link
                   key={item._key || idx}
                   href={item.href || "/"}
-                  className="text-zinc-700 hover:text-zinc-950"
+                  className="text-zinc-700 hover:text-emerald-900 whitespace-nowrap"
                 >
                   {item.label}
                 </Link>
@@ -330,7 +363,7 @@ function Header({ logo, data, categories = [] }) {
                 <Link
                   key={item._key || idx}
                   href={item.href || "/"}
-                  className="hover:text-zinc-950"
+                  className="hover:text-zinc-950 whitespace-nowrap"
                 >
                   {item.label}
                 </Link>
