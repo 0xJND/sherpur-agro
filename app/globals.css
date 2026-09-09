@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3cb688;
+}
+
+button {
+  cursor: pointer;
+}
