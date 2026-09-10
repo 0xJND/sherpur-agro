@@ -60,6 +60,5 @@ export const heroData = async () => {
     }),
   );
 
-  console.log(data);
   return data;
 };

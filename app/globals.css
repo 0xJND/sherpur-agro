@@ -4,6 +4,10 @@
   --color-primary: #3cb688;
 }
 
+* {
+  outline: none;
+}
+
 button {
   cursor: pointer;
   color: #bde1f9;

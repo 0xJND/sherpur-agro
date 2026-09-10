@@ -7,7 +7,7 @@ async function Hero() {
 
   return (
     <section className="relative w-full flex h-fit justify-center items-center overflow-hidden">
-      <div className="w-full max-w-[1480px] p-2 md:pt-3 lg:pt-5 relative z-10 md:px-6 lg:px-8">
+      <div className="w-full max-w-[1280px] p-2 md:pt-3 lg:pt-5 relative z-10  lg:px-8">
         <div className="grid grid-cols-12 gap-3 lg:gap-4 items-stretch">
           {widgets.map((com: any) => (
             <RenderWidget key={com._key || com._type} data={com} />

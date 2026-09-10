@@ -143,7 +143,7 @@ function Header({ logo, data, categories = [] }: HeaderProps) {
           isScrolled ? "bg-white/95 backdrop-blur-md" : "bg-white"
         }`}
       >
-        <div className="mx-auto flex max-w-[1480px] flex-col">
+        <div className="mx-auto flex max-w-[1280px] flex-col">
           <div className="flex h-12 sm:h-16 lg:h-20 items-center justify-between gap-3 sm:gap-6 lg:gap-10 px-3 sm:px-6 lg:px-8">
             <div className="flex flex-1 items-center gap-2.5 sm:gap-6 min-w-0">
               <Link href="/" className="shrink-0 flex items-center">
@@ -213,7 +213,7 @@ function Header({ logo, data, categories = [] }: HeaderProps) {
 
         {mobileNavLinks.length > 0 && (
           <div className="w-full md:hidden border-t border-zinc-100">
-            <div className="mx-auto max-w-[1480px] relative px-3 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-[1280px] relative px-3 sm:px-6 lg:px-8">
               <div className="flex items-center gap-5 overflow-x-auto py-2 pr-10 scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none]">
                 {mobileNavLinks.map((item, idx) => (
                   <Link
@@ -238,7 +238,7 @@ function Header({ logo, data, categories = [] }: HeaderProps) {
         )}
 
         <div className="hidden md:flex w-full border-t border-zinc-100 bg-white">
-          <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between py-2.5 sm:py-3 text-xs md:text-sm px-3 sm:px-6 lg:px-8 relative">
+          <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between py-2.5 sm:py-3 text-xs md:text-sm px-3 sm:px-6 lg:px-8 relative">
             <div className="flex items-center gap-4 md:gap-6 lg:gap-8 font-medium">
               {categoriesButtonText && (
                 <div

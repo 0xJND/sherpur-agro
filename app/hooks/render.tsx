@@ -328,11 +328,11 @@ export const HeroSlider = ({ slides = [] }: any) => {
 
 export const HeroBanner = ({ topBanner, bottomBanners = [] }: any) => {
   return (
-    <div className="w-full h-full flex flex-col justify-between gap-3 lg:gap-4">
+    <div className="lg:flex hidden w-full h-full  flex-col gap-2 lg:gap-4">
       {topBanner?.imageUrl && (
         <Link
           href={topBanner.link || "#"}
-          className="relative w-full aspect-[700/190] overflow-hidden block rounded-md bg-neutral-100"
+          className="relative w-full aspect-[200/130] overflow-hidden block rounded-md bg-neutral-100"
         >
           <ImageWithSkeleton
             src={topBanner.imageUrl}
@@ -357,7 +357,7 @@ export const HeroBanner = ({ topBanner, bottomBanners = [] }: any) => {
               <Link
                 key={banner._key || idx}
                 href={banner.link || "#"}
-                className="relative w-full aspect-[342/190] overflow-hidden block rounded-md bg-neutral-100"
+                className="relative w-full aspect-[50/57] overflow-hidden block rounded-md bg-neutral-100"
               >
                 <ImageWithSkeleton
                   src={banner.imageUrl}
