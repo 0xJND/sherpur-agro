@@ -5,7 +5,6 @@ import Link from "next/link";
 async function TopCategories() {
   const [categories_] = await Promise.all([topCategories()]);
 
-  console.log(categories_);
   return (
     <div className="bg-white p-5 pt-3  border-zinc-100 border">
       <h3 className="text-lg font-medium">Top categories</h3>

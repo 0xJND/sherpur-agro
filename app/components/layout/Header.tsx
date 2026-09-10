@@ -10,10 +10,42 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { ChevronDown, Menu, Search, ShoppingBag } from "lucide-react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 
-function CategoryCard({ item }) {
+export interface CategoryItem {
+  slug: string;
+  name: string;
+  icon: string | StaticImageData;
+  color?: string;
+}
+
+export interface NavLink {
+  _key?: string;
+  label: string;
+  href?: string;
+}
+
+export interface HeaderData {
+  searchPlaceholder?: string;
+  categoriesButtonText?: string;
+  primaryNavLinks?: NavLink[];
+  secondaryNavLinks?: NavLink[];
+  signInLink?: NavLink;
+  signUpLink?: NavLink;
+}
+
+export interface HeaderProps {
+  logo: string | StaticImageData;
+  data?: HeaderData;
+  categories?: CategoryItem[];
+}
+
+interface CategoryCardProps {
+  item: CategoryItem;
+}
+
+function CategoryCard({ item }: CategoryCardProps) {
   return (
     <Link
       href={`/category/${item.slug}`}
@@ -52,15 +84,15 @@ function CategoryCard({ item }) {
   );
 }
 
-function Header({ logo, data, categories = [] }) {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+function Header({ logo, data, categories = [] }: HeaderProps) {
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState<boolean>(false);
   const { scrollY } = useScroll();
-  const headerY = useMotionValue(0);
+  const headerY = useMotionValue<number>(0);
 
   const headerHeight = 130;
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest: number) => {
     const prev = scrollY.getPrevious() ?? 0;
     const diff = latest - prev;
 
@@ -96,12 +128,12 @@ function Header({ logo, data, categories = [] }) {
     signUpLink = { label: "Sign up", href: "/signup" },
   } = data || {};
 
-  const mobileNavLinks = [...primaryNavLinks, ...secondaryNavLinks];
+  const mobileNavLinks: NavLink[] = [...primaryNavLinks, ...secondaryNavLinks];
 
   return (
     <>
       <div
-        className="h-[89px] sm:h-[105px] md:h-[135px] lg:h-[145px] w-full shrink-0"
+        className="h-[82px] sm:h-[98px] md:h-[118px] lg:h-[134px] w-full shrink-0"
         aria-hidden="true"
       />
 
@@ -142,22 +174,20 @@ function Header({ logo, data, categories = [] }) {
                 <button
                   type="submit"
                   aria-label="Submit search"
-                  className="flex shrink-0 items-center justify-center self-stretch px-2 sm:px-3 text-zinc-600 hover:text-emerald-900 cursor-pointer"
+                  className="flex shrink-0 items-center justify-center self-stretch px-2 sm:px-3 !text-zinc-600 hover:!text-emerald-900 cursor-pointer"
                 >
                   <Search
-                    className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 "
                     strokeWidth={2}
                   />
                 </button>
               </form>
             </div>
 
-            <div className="flex items-center gap-3 sm:gap-5 lg:gap-7 shrink-0">
-              <button className="flex items-center gap-1.5 sm:gap-2 text-zinc-700 hover:text-zinc-950 cursor-pointer">
+            <div className="hidden md:flex items-center gap-3 sm:gap-5 lg:gap-7 shrink-0">
+              <button className="flex items-center gap-1.5 sm:gap-2 !text-zinc-700 hover:!text-zinc-950 cursor-pointer">
                 <ShoppingBag size={18} strokeWidth={1.5} />
-                <span className="hidden sm:inline text-sm font-medium">
-                  Cart
-                </span>
+                <span className="text-sm font-medium">Cart</span>
               </button>
 
               {signInLink?.label && (
@@ -219,14 +249,14 @@ function Header({ logo, data, categories = [] }) {
                   <button
                     type="button"
                     onClick={() => setIsCategoriesOpen((prev) => !prev)}
-                    className="flex items-center gap-1.5 md:gap-2 text-zinc-800 hover:text-emerald-900 cursor-pointer py-1 select-none font-semibold"
+                    className="flex items-center gap-1.5 md:gap-2 !text-zinc-700 hover:!text-zinc-900 cursor-pointer py-1 select-none "
                   >
                     <Menu size={16} strokeWidth={2} />
                     <span>{categoriesButtonText}</span>
                     <ChevronDown
                       size={14}
                       className={
-                        isCategoriesOpen ? "rotate-180 text-emerald-900" : ""
+                        isCategoriesOpen ? "rotate-180 text-zinc-900" : ""
                       }
                     />
                   </button>
@@ -238,9 +268,9 @@ function Header({ logo, data, categories = [] }) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute left-0 top-full z-[100] w-72 md:w-80 pt-2 translate-y-[5px] "
+                        className="absolute left-0 top-full z-[100] w-72 md:w-80 pt-2 translate-y-[5px]"
                       >
-                        <div className="bg-white p-2.5 pt-3 border border-t-0 border-zinc-200 shadow-xl rounded-none max-h-[70vh] overflow-y-auto space-y-1.5 scrollbar-thin grid gap-2 grid-cols-2">
+                        <div className="bg-white p-3 pb-2 border border-t-0 border-zinc-200 shadow-xl rounded-none max-h-[70vh] overflow-y-auto space-y-1.5 scrollbar-thin grid gap-2 grid-cols-2">
                           {categories.length > 0 ? (
                             categories.map((item, i) => (
                               <CategoryCard
@@ -264,7 +294,7 @@ function Header({ logo, data, categories = [] }) {
                 <Link
                   key={item._key || idx}
                   href={item.href || "/"}
-                  className="text-zinc-700 hover:text-emerald-900 whitespace-nowrap"
+                  className="text-zinc-700 hover:text-zinc-900 whitespace-nowrap"
                 >
                   {item.label}
                 </Link>

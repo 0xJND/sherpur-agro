@@ -4,6 +4,7 @@ import {
   LayoutTemplate,
   Palette,
   Settings,
+  Sliders,
   Tags,
 } from "lucide-react";
 import type { StructureResolver } from "sanity/structure";
@@ -76,6 +77,12 @@ export const structure: StructureResolver = (S) =>
                     .schemaType("headerSettings")
                     .documentId("headerSettings"),
                 ),
+
+              S.listItem()
+                .id("heroSection")
+                .title("Hero Section")
+                .icon(Sliders)
+                .child(S.document().schemaType("hero").documentId("hero")),
             ]),
         ),
 
@@ -94,6 +101,7 @@ export const structure: StructureResolver = (S) =>
           ![
             "siteSetting",
             "headerSettings",
+            "hero",
             "category",
             "subCategory",
           ].includes(listItem.getId() || ""),

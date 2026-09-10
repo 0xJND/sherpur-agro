@@ -18,7 +18,7 @@ export const topCategories = async () => {
     {},
     cacheConf({
       revalidate: 3600,
-      tags: ["site-settings"],
+      tags: ["top-categories"],
     }),
   );
 

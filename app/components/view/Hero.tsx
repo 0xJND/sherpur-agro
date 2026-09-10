@@ -1,12 +1,17 @@
-import { CloudShader } from "@/components/ui/cloud-shader";
-import TopCategories from "../ui/TopCategories";
+import { heroData } from "@/app/controllers/heroData";
+import RenderWidget from "@/app/hooks/render";
 
-function Hero() {
+async function Hero() {
+  const [heroData_] = await Promise.all([heroData()]);
+  const widgets = heroData_?.widgets || [];
   return (
-    <section className="relative w-full min-h-[200px] flex justify-center items-center overflow-hidden">
-      <CloudShader className="absolute inset-0 w-full h-full -z-10 pointer-events-none opacity-80 blur-[10px]" />
-      <div className="w-full max-w-[1480px] py-10 relative z-10 px-3 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-4"></div>
+    <section className="relative w-full flex h-fit justify-center items-center overflow-hidden ">
+      <div className="w-full max-w-[1480px]  p-2 md:pt-3 lg:pt-5 relative z-10 md:px-6 lg:px-8">
+        <div className="grid grid-cols-12">
+          {widgets.map((com: any) => {
+            return <RenderWidget key={com._key || com._type} data={com} />;
+          })}
+        </div>
       </div>
     </section>
   );
