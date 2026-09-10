@@ -11,6 +11,20 @@ export const heroSliderWidget = defineType({
       type: "string",
     }),
     defineField({
+      name: "gridColsMobile",
+      title: "Mobile Column Span (out of 12)",
+      type: "number",
+      initialValue: 12,
+      options: { list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+    }),
+    defineField({
+      name: "gridColsDesktop",
+      title: "Desktop Column Span (out of 12)",
+      type: "number",
+      initialValue: 7,
+      options: { list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+    }),
+    defineField({
       name: "slides",
       title: "Slides",
       type: "array",
@@ -69,8 +83,6 @@ export const heroSliderWidget = defineType({
               initialValue: "middle-left",
               hidden: ({ parent }) => parent?.contentType === "none",
             }),
-
-            // Text Content Fields
             defineField({
               name: "title",
               title: "Title",
@@ -96,36 +108,29 @@ export const heroSliderWidget = defineType({
               type: "string",
               hidden: ({ parent }) => parent?.contentType !== "text",
             }),
-
-            // Custom Color Fields (Color Picker)
             defineField({
               name: "titleColor",
               title: "Title Color",
               type: "color",
-              description: "Pick custom color for the Title",
               hidden: ({ parent }) => parent?.contentType !== "text",
             }),
             defineField({
               name: "descColor",
               title: "Description Color",
               type: "color",
-              description: "Pick custom color for the Description",
               hidden: ({ parent }) => parent?.contentType !== "text",
             }),
             defineField({
               name: "buttonBgColor",
               title: "Color",
               type: "color",
-              description: "Pick custom color",
             }),
             defineField({
               name: "buttonTextColor",
               title: "Button Text Color",
               type: "color",
-              description: "Pick custom color for Button Text",
               hidden: ({ parent }) => parent?.contentType !== "text",
             }),
-
             defineField({
               name: "contentImage",
               title: "Content Overlay Image",

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getGridSpanClass } from "@/app/hooks/gridHelpMaper";
 
 const positionClasses: Record<string, { container: string; text: string }> = {
   "top-left": {
@@ -96,7 +97,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
 
   return (
     <div
-      className="col-span-12 md:col-span-7 relative w-full aspect-[1000/400] overflow-hidden select-none bg-black border-0 rounded-md shadow-none"
+      className="relative w-full aspect-[1000/400] overflow-hidden select-none bg-black rounded-md shadow-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -136,6 +137,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
                 fill
                 priority={index === 0}
                 className="object-cover object-center absolute inset-0"
+                sizes="(max-width: 1024px) 100vw, 60vw"
               />
             )}
 
@@ -224,10 +226,8 @@ export const HeroSlider = ({ slides = [] }: any) => {
         );
       })}
 
-      {/* Side Hover Chevron Controls */}
       {slides.length > 1 && (
         <>
-          {/* Left Hover Zone */}
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-20 md:w-24 lg:w-28 z-30 flex items-center justify-start group/left pointer-events-auto">
             <button
               onClick={(e) => {
@@ -249,7 +249,6 @@ export const HeroSlider = ({ slides = [] }: any) => {
             </button>
           </div>
 
-          {/* Right Hover Zone */}
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-20 md:w-24 lg:w-28 z-30 flex items-center justify-end group/right pointer-events-auto">
             <button
               onClick={(e) => {
@@ -270,36 +269,82 @@ export const HeroSlider = ({ slides = [] }: any) => {
               />
             </button>
           </div>
+
+          <div
+            style={{
+              borderColor: "rgba(255, 255, 255, 0.2)",
+            }}
+            className="absolute bottom-2.5 sm:bottom-3.5 right-3 sm:right-5 z-30 flex items-center space-x-1.5 px-2 py-1 rounded-none border bg-black/30 backdrop-blur-md"
+          >
+            {slides.map((_: any, dotIndex: number) => {
+              const isSelected = dotIndex === current;
+              return (
+                <button
+                  key={dotIndex}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrent(dotIndex);
+                  }}
+                  style={{
+                    backgroundColor: isSelected ? navBgColor : undefined,
+                  }}
+                  className={`h-1.5 transition-all duration-200 rounded-none ${
+                    isSelected
+                      ? "w-5 md:w-6"
+                      : "w-2 md:w-2.5 bg-white/40 hover:bg-white/80"
+                  }`}
+                  aria-label={`Go to slide ${dotIndex + 1}`}
+                />
+              );
+            })}
+          </div>
         </>
       )}
+    </div>
+  );
+};
 
-      {/* Navigation Dots (Square, Zero-Radius) */}
-      {slides.length > 1 && (
-        <div
-          style={{
-            borderColor: "rgba(255, 255, 255, 0.2)",
-          }}
-          className="absolute bottom-2.5 sm:bottom-3.5 right-3 sm:right-5 z-30 flex items-center space-x-1.5 px-2 py-1 rounded-none border bg-black/30 backdrop-blur-md"
+export const HeroBanner = ({ topBanner, bottomBanners = [] }: any) => {
+  return (
+    <div className="w-full h-full flex flex-col justify-between gap-3 lg:gap-4">
+      {topBanner?.imageUrl && (
+        <Link
+          href={topBanner.link || "#"}
+          className="relative w-full aspect-[700/190] overflow-hidden block rounded-none"
         >
-          {slides.map((_: any, dotIndex: number) => {
-            const isSelected = dotIndex === current;
+          <Image
+            src={topBanner.imageUrl}
+            alt={topBanner.alt || "Top Banner"}
+            fill
+            className="object-cover object-center rounded-md"
+            sizes="(max-width: 1024px) 100vw, 40vw"
+            priority
+          />
+        </Link>
+      )}
+
+      {bottomBanners.length > 0 && (
+        <div
+          className={`grid gap-3 lg:gap-4 w-full ${
+            bottomBanners.length > 1 ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
+          {bottomBanners.map((banner: any, idx: number) => {
+            if (!banner?.imageUrl) return null;
             return (
-              <button
-                key={dotIndex}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCurrent(dotIndex);
-                }}
-                style={{
-                  backgroundColor: isSelected ? navBgColor : undefined,
-                }}
-                className={`h-1.5 transition-all duration-200 rounded-none ${
-                  isSelected
-                    ? "w-5 md:w-6"
-                    : "w-2 md:w-2.5 bg-white/40 hover:bg-white/80"
-                }`}
-                aria-label={`Go to slide ${dotIndex + 1}`}
-              />
+              <Link
+                key={banner._key || idx}
+                href={banner.link || "#"}
+                className="relative w-full aspect-[342/190] overflow-hidden block rounded-none"
+              >
+                <Image
+                  src={banner.imageUrl}
+                  alt={banner.alt || `Promo ${idx + 1}`}
+                  fill
+                  className="object-cover object-center rounded-md"
+                  sizes="(max-width: 1024px) 50vw, 20vw"
+                />
+              </Link>
             );
           })}
         </div>
@@ -310,6 +355,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
 
 const components: Record<string, React.ComponentType<any>> = {
   heroSliderWidget: HeroSlider,
+  heroBannerWidget: HeroBanner,
 };
 
 export default function RenderWidget({ data }: { data: any }) {
@@ -317,5 +363,14 @@ export default function RenderWidget({ data }: { data: any }) {
   const Component = components[data._type];
   if (!Component) return null;
 
-  return <Component {...data} />;
+  const spanClasses = getGridSpanClass(
+    data.gridColsMobile,
+    data.gridColsDesktop,
+  );
+
+  return (
+    <div className={`${spanClasses} w-full flex flex-col self-stretch`}>
+      <Component {...data} />
+    </div>
+  );
 }

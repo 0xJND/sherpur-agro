@@ -9,7 +9,7 @@ export default defineType({
       name: "widgets",
       title: "Hero Widgets",
       type: "array",
-      of: [{ type: "heroSliderWidget" }],
+      of: [{ type: "heroSliderWidget" }, { type: "heroBannerWidget" }],
     }),
   ],
   preview: {

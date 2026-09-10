@@ -11,6 +11,8 @@ export const heroData = async () => {
       widgets[] {
         _key,
         _type,
+        gridColsMobile,
+        gridColsDesktop,
         _type == "heroSliderWidget" => {
           widgetTitle,
           slides[] {
@@ -30,6 +32,20 @@ export const heroData = async () => {
             "contentImageUrl": contentImage.asset->url,
             contentImageWidth
           }
+        },
+        _type == "heroBannerWidget" => {
+          widgetTitle,
+          topBanner {
+            "imageUrl": image.asset->url,
+            link,
+            alt
+          },
+          bottomBanners[] {
+            _key,
+            "imageUrl": image.asset->url,
+            link,
+            alt
+          }
         }
       }
     }
@@ -44,5 +60,6 @@ export const heroData = async () => {
     }),
   );
 
+  console.log(data);
   return data;
 };

@@ -5,6 +5,7 @@ import categories from "./categories";
 import subCategory from "./schema/subCategory";
 import hero from "./schema/hero";
 import { heroSliderWidget } from "./schema/heroSliderWidget";
+import { heroBannerWidget } from "./schema/heroBannerWidget";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -14,5 +15,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     subCategory,
     hero,
     heroSliderWidget,
+    heroBannerWidget,
   ],
 };
