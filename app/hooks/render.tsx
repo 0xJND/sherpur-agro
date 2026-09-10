@@ -7,15 +7,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const positionClasses: Record<string, { container: string; text: string }> = {
   "top-left": {
-    container: "items-start justify-start text-left pt-6 sm:pt-15",
+    container: "items-start justify-start text-left pt-3 sm:pt-6 md:pt-8",
     text: "items-start",
   },
   "top-center": {
-    container: "items-start justify-center text-center pt-6 sm:pt-15",
+    container: "items-start justify-center text-center pt-3 sm:pt-6 md:pt-8",
     text: "items-center",
   },
   "top-right": {
-    container: "items-start justify-end text-right pt-6 sm:pt-15",
+    container: "items-start justify-end text-right pt-3 sm:pt-6 md:pt-8",
     text: "items-end",
   },
   "middle-left": {
@@ -31,15 +31,15 @@ const positionClasses: Record<string, { container: string; text: string }> = {
     text: "items-end",
   },
   "bottom-left": {
-    container: "items-end justify-start text-left pb-6 sm:pb-15",
+    container: "items-end justify-start text-left pb-3 sm:pb-6 md:pb-8",
     text: "items-start",
   },
   "bottom-center": {
-    container: "items-end justify-center text-center pb-6 sm:pb-15",
+    container: "items-end justify-center text-center pb-3 sm:pb-6 md:pb-8",
     text: "items-center",
   },
   "bottom-right": {
-    container: "items-end justify-end text-right pb-6 sm:pb-15",
+    container: "items-end justify-end text-right pb-3 sm:pb-6 md:pb-8",
     text: "items-end",
   },
 };
@@ -96,7 +96,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
 
   return (
     <div
-      className="col-span-12 md:col-span-7 relative w-full aspect-[1000/400] overflow-hidden select-none bg-black border-0 rounded-lg shadow-none"
+      className="col-span-12 md:col-span-7 relative w-full aspect-[1000/400] overflow-hidden select-none bg-black border-0 rounded-md shadow-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -135,16 +135,16 @@ export const HeroSlider = ({ slides = [] }: any) => {
                 alt={slide.title || "Slide Image"}
                 fill
                 priority={index === 0}
-                className="object-cover object-center absolute inset-[1px]"
+                className="object-cover object-center absolute inset-0"
               />
             )}
 
             {slide.contentType !== "none" && slide?.title && (
               <div
-                className={`relative z-20 h-full w-full flex px-6 sm:px-14 md:px-20 lg:px-24 pointer-events-none  ${pos.container}`}
+                className={`relative z-20 h-full w-full flex px-4 sm:px-8 md:px-12 pointer-events-none ${pos.container}`}
               >
                 <div
-                  className={`relative overflow-hidden w-full max-w-sm backdrop-blur-md bg-black/20 sm:max-w-md md:max-w-lg lg:max-w-xl flex flex-col p-4 sm:p-6 transition-all duration-300 pointer-events-auto ${pos.text} `}
+                  className={`relative overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-md backdrop-blur-md bg-black/20 flex flex-col p-3 sm:p-4 transition-all duration-300 pointer-events-auto rounded-none ${pos.text}`}
                 >
                   <Image
                     src={bgUrl || ""}
@@ -164,7 +164,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
                                 slide.titleColor ||
                                 (isDark ? "#0a0a0a" : "#ffffff"),
                             }}
-                            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight mb-1.5 sm:mb-2 transition-colors duration-200"
+                            className="text-base sm:text-xl md:text-2xl font-bold tracking-tight leading-tight mb-1 transition-colors duration-200"
                           >
                             {slide.title}
                           </h2>
@@ -179,7 +179,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
                                   ? "#262626"
                                   : "rgba(255, 255, 255, 0.9)"),
                             }}
-                            className="text-xs sm:text-sm md:text-base font-medium mb-3 sm:mb-4 line-clamp-2 leading-relaxed transition-colors duration-200"
+                            className="text-xs sm:text-sm font-medium mb-2 sm:mb-3 line-clamp-2 leading-relaxed transition-colors duration-200"
                           >
                             {slide.description}
                           </p>
@@ -202,9 +202,9 @@ export const HeroSlider = ({ slides = [] }: any) => {
                                     ? "#0a0a0a"
                                     : "rgba(255, 255, 255, 0.4)"),
                                 color: slide.buttonTextColor || "#ffffff",
-                                boxShadow: "0 4px 14px rgba(0, 0, 0, 0.12)",
+                                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                               }}
-                              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold uppercase tracking-wider rounded-none border transition-all duration-200 hover:brightness-110 active:scale-95"
+                              className="inline-flex items-center justify-center gap-1 px-3 py-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider rounded-none border transition-all duration-200 hover:brightness-110 active:scale-95"
                             >
                               <span>{slide.buttonText}</span>
                               <ChevronRight
@@ -224,9 +224,11 @@ export const HeroSlider = ({ slides = [] }: any) => {
         );
       })}
 
+      {/* Side Hover Chevron Controls */}
       {slides.length > 1 && (
         <>
-          <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-16 z-30 flex items-center justify-start group/left pointer-events-auto">
+          {/* Left Hover Zone */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-20 md:w-24 lg:w-28 z-30 flex items-center justify-start group/left pointer-events-auto">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -238,13 +240,17 @@ export const HeroSlider = ({ slides = [] }: any) => {
                 borderColor: navBgColor,
               }}
               aria-label="Previous Slide"
-              className="w-6 h-14 sm:w-10 sm:h-14 flex items-center justify-center rounded-none opacity-0 group-hover/left:opacity-100 transition-all duration-200 border-r border-t border-b hover:brightness-110"
+              className="w-5 h-9 md:w-6 md:h-10 lg:w-7 lg:h-12 flex items-center justify-center rounded-none opacity-0 group-hover/left:opacity-100 transition-all duration-200 border-r border-t border-b hover:brightness-110 active:scale-95 shadow-sm"
             >
-              <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
+              <ChevronLeft
+                className="w-4 h-4 md:w-4.5 md:h-4.5 lg:w-5 lg:h-5"
+                strokeWidth={2.5}
+              />
             </button>
           </div>
 
-          <div className="absolute right-0 top-0 bottom-0 w-10 sm:w-16 z-30 flex items-center justify-end group/right pointer-events-auto">
+          {/* Right Hover Zone */}
+          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-20 md:w-24 lg:w-28 z-30 flex items-center justify-end group/right pointer-events-auto">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -256,20 +262,24 @@ export const HeroSlider = ({ slides = [] }: any) => {
                 borderColor: navBgColor,
               }}
               aria-label="Next Slide"
-              className="w-6 h-14 sm:w-10 sm:h-12 flex items-center justify-center rounded-none opacity-0 group-hover/right:opacity-100 transition-all duration-200 border-l border-t border-b hover:brightness-110"
+              className="w-5 h-9 md:w-6 md:h-10 lg:w-7 lg:h-12 flex items-center justify-center rounded-none opacity-0 group-hover/right:opacity-100 transition-all duration-200 border-l border-t border-b hover:brightness-110 active:scale-95 shadow-sm"
             >
-              <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
+              <ChevronRight
+                className="w-4 h-4 md:w-4.5 md:h-4.5 lg:w-5 lg:h-5"
+                strokeWidth={2.5}
+              />
             </button>
           </div>
         </>
       )}
 
+      {/* Navigation Dots (Square, Zero-Radius) */}
       {slides.length > 1 && (
         <div
           style={{
-            borderColor: navBgColor,
+            borderColor: "rgba(255, 255, 255, 0.2)",
           }}
-          className="absolute bottom-3 sm:bottom-5 right-4 sm:right-8 z-30 flex items-center space-x-1.5 px-2.5 py-1.5 rounded-none border bg-black/10 backdrop-blur-md"
+          className="absolute bottom-2.5 sm:bottom-3.5 right-3 sm:right-5 z-30 flex items-center space-x-1.5 px-2 py-1 rounded-none border bg-black/30 backdrop-blur-md"
         >
           {slides.map((_: any, dotIndex: number) => {
             const isSelected = dotIndex === current;
@@ -283,10 +293,10 @@ export const HeroSlider = ({ slides = [] }: any) => {
                 style={{
                   backgroundColor: isSelected ? navBgColor : undefined,
                 }}
-                className={`h-1 sm:h-1.5 transition-all duration-200 rounded-none ${
+                className={`h-1.5 transition-all duration-200 rounded-none ${
                   isSelected
-                    ? "w-6 sm:w-8"
-                    : "w-2 sm:w-3 bg-white/40 hover:bg-white/80"
+                    ? "w-5 md:w-6"
+                    : "w-2 md:w-2.5 bg-white/40 hover:bg-white/80"
                 }`}
                 aria-label={`Go to slide ${dotIndex + 1}`}
               />
