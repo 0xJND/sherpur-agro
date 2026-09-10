@@ -1,10 +1,31 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
+import Image, { ImageProps } from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getGridSpanClass } from "@/app/hooks/gridHelpMaper";
+
+// Reusable Image with Light/White Skeleton Loader
+const ImageWithSkeleton = ({ className, alt, ...props }: ImageProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  return (
+    <>
+      {isLoading && (
+        <div className="absolute inset-0 bg-neutral-200/90 animate-pulse z-0 rounded-inherit" />
+      )}
+      <Image
+        {...props}
+        alt={alt}
+        className={`${className || ""} transition-opacity duration-500 ${
+          isLoading ? "opacity-0" : "opacity-100"
+        }`}
+        onLoad={() => setIsLoading(false)}
+      />
+    </>
+  );
+};
 
 const positionClasses: Record<string, { container: string; text: string }> = {
   "top-left": {
@@ -97,7 +118,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
 
   return (
     <div
-      className="relative w-full aspect-[1000/400] overflow-hidden select-none bg-black rounded-md shadow-none"
+      className="relative w-full aspect-[1000/400] overflow-hidden select-none bg-neutral-100 rounded-md shadow-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -130,8 +151,9 @@ export const HeroSlider = ({ slides = [] }: any) => {
               />
             )}
 
+            {/* Slider Main Background Image with Light Skeleton */}
             {bgUrl && (
-              <Image
+              <ImageWithSkeleton
                 src={bgUrl}
                 alt={slide.title || "Slide Image"}
                 fill
@@ -310,9 +332,9 @@ export const HeroBanner = ({ topBanner, bottomBanners = [] }: any) => {
       {topBanner?.imageUrl && (
         <Link
           href={topBanner.link || "#"}
-          className="relative w-full aspect-[700/190] overflow-hidden block rounded-none"
+          className="relative w-full aspect-[700/190] overflow-hidden block rounded-md bg-neutral-100"
         >
-          <Image
+          <ImageWithSkeleton
             src={topBanner.imageUrl}
             alt={topBanner.alt || "Top Banner"}
             fill
@@ -335,9 +357,9 @@ export const HeroBanner = ({ topBanner, bottomBanners = [] }: any) => {
               <Link
                 key={banner._key || idx}
                 href={banner.link || "#"}
-                className="relative w-full aspect-[342/190] overflow-hidden block rounded-none"
+                className="relative w-full aspect-[342/190] overflow-hidden block rounded-md bg-neutral-100"
               >
-                <Image
+                <ImageWithSkeleton
                   src={banner.imageUrl}
                   alt={banner.alt || `Promo ${idx + 1}`}
                   fill
