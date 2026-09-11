@@ -118,7 +118,7 @@ export const HeroSlider = ({ slides = [] }: any) => {
 
   return (
     <div
-      className="relative w-full aspect-[1000/400] overflow-hidden select-none bg-neutral-100 rounded-md shadow-none"
+      className="relative w-full aspect-[1000/400] overflow-hidden select-none bg-neutral-100  shadow-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -332,13 +332,13 @@ export const HeroBanner = ({ topBanner, bottomBanners = [] }: any) => {
       {topBanner?.imageUrl && (
         <Link
           href={topBanner.link || "#"}
-          className="relative w-full aspect-[200/130] overflow-hidden block rounded-md bg-neutral-100"
+          className="relative w-full aspect-[200/130] overflow-hidden block  bg-neutral-100"
         >
           <ImageWithSkeleton
             src={topBanner.imageUrl}
             alt={topBanner.alt || "Top Banner"}
             fill
-            className="object-cover object-center rounded-md"
+            className="object-cover object-center "
             sizes="(max-width: 1024px) 100vw, 40vw"
             priority
           />
@@ -357,13 +357,13 @@ export const HeroBanner = ({ topBanner, bottomBanners = [] }: any) => {
               <Link
                 key={banner._key || idx}
                 href={banner.link || "#"}
-                className="relative w-full aspect-[50/57] overflow-hidden block rounded-md bg-neutral-100"
+                className="relative w-full aspect-[50/57] overflow-hidden block bg-neutral-100"
               >
                 <ImageWithSkeleton
                   src={banner.imageUrl}
                   alt={banner.alt || `Promo ${idx + 1}`}
                   fill
-                  className="object-cover object-center rounded-md"
+                  className="object-cover object-center "
                   sizes="(max-width: 1024px) 50vw, 20vw"
                 />
               </Link>

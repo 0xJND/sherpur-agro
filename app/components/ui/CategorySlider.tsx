@@ -118,7 +118,7 @@ export default function CategorySlider({ items }: { items: Category[] }) {
             href={`/category/${slug}`}
             className="flex-shrink-0"
           >
-            <article className="flex items-center gap-2 md:gap-3 min-w-[130px] sm:min-w-[150px] md:min-w-44 lg:min-w-48 p-1.5 sm:p-2 md:p-2.5 bg-slate-100/40 border border-zinc-200/60 rounded-md hover:bg-slate-100 transition">
+            <article className="flex items-center gap-2 md:gap-3 min-w-[130px] sm:min-w-[150px] md:min-w-44 lg:min-w-48 p-1.5 sm:p-2 md:p-2.5 bg-slate-100/40 border border-zinc-200/80  hover:bg-slate-100 transition">
               <div className="relative flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10">
                 <Image
                   alt={name}
